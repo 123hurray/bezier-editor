@@ -1,3 +1,6 @@
+/**
+ * @Author Ray Zhang 
+ */
 var createNode = function(x, y, control1, control2) {
   if(typeof(control1) != 'object')
 		control1 = {
