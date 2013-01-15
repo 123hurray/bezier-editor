@@ -2,7 +2,7 @@
  * @Author Ray Zhang 
  */
 var createNode = function(x, y, control1, control2) {
-  if(typeof(control1) != 'object')
+	if(typeof(control1) != 'object')
 		control1 = {
 			x: x,
 			y: y,
@@ -26,7 +26,7 @@ var p = function(text) {
 	console.log(text);
 }
 var bezierEditor = function(id) {
-	editor = {
+	var editor = {
 		state: {
 			down: false,
 			current: null,
@@ -35,7 +35,6 @@ var bezierEditor = function(id) {
 			dragMode: 0,
 		},
 		nodes: [],
-		fakeNode: null,
 		canvas: null,
 		pointSize: 8,
 		halfPointSize : 0,
@@ -226,7 +225,64 @@ var bezierEditor = function(id) {
 				// _ctx.bezierCurveTo(nodes[_lastIndex].controls[1].x, nodes[_lastIndex].controls[1].y, this.fakeNode.x, this.fakeNode.y, this.fakeNode.x, this.fakeNode.y);
 				// _ctx.stroke();
 			// }
-		}
+		},
+		getLength: function() {
+			var coefficient = function(t) {
+				return {
+					f1: t*t*t,
+					f2: 3*t*t*(1-t),
+					f3: 3*t*(1-t)*(1-t),
+					f4: (1-t)*(1-t)*(1-t),
+				}
+			};
+			var length = function(a, b) {
+				return Math.sqrt((a[0] - b[0]) * (a[0] - b[0]) + (a[1] - b[1]) * (a[1] - b[1]));
+			};
+			var total = 0;
+			var lengths = [];
+			for(var i = 0; i < this.nodes.length - 1; ++i) {
+				var n1 = this.nodes[i];
+				var n2 = this.nodes[i + 1];
+				var p1 = [n1.x, n1.y];
+				var p2 = [n1.controls[1].x, n1.controls[1].y];
+				var p3 = [n2.controls[0].x, n2.controls[0].y];
+				var p4 = [n2.x, n2.y];
+				var lastPoint = [n1.x, n1.y];
+				var totalLength = 0;
+				for(var j = 0; j < 1; j+=0.01) {
+					var c = coefficient(j);
+					var point = [0, 0];
+					point[0] = p1[0] * c.f1 + p2[0] * c.f2 + p3[0] * c.f3 + p4[0] * c.f4;
+					point[1] = p1[1] * c.f1 + p2[1] * c.f2 + p3[1] * c.f3 + p4[1] * c.f4;
+					totalLength += length(lastPoint, point);
+					lastPoint = point;
+				}
+				lengths.push(totalLength);
+				total += totalLength;
+			}
+			var result = [];
+			for(var i = 0; i < this.nodes.length - 1; ++i) {
+				result.push(lengths[i] / total);
+			}
+			return result;
+		},
+		exportBezier: function(time) {
+			var exportString = ".stop()";
+			var result = this.getLength();
+			for(var i = 0; i < this.nodes.length - 1; ++i) {
+				var n1 = this.nodes[i];
+				var n2 = this.nodes[i + 1];
+				var p1 = [n1.x, n1.y];
+				var p2 = [n1.controls[1].x, n1.controls[1].y];
+				var p3 = [n2.controls[0].x, n2.controls[0].y];
+				var p4 = [n2.x, n2.y];
+				exportString += '.animate({path:new bezier({start: [' + p1[0] + ', ' + p1[1] + '],' +
+					'c1:['+p2[0]+', '+p2[1]+'],'+
+					'end: ['+p4[0]+','+p4[1]+'],'+
+					'c2:['+p3[0]+', '+p3[1]+'],})}, ' + result[i] * time + ' ,"linear")';
+			}
+			return exportString;
+		},
 	};
 	editor.init(id);
 	return editor;
