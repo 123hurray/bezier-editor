@@ -39,23 +39,21 @@
 	</style>
 </head>
 <body>
-	<div id="left">
-		<h1>Draw the bezier curve below like in Photoshop</h1>
-		<div>
-			<div id="test"></div>
-			<canvas id="bezier-canvas" width="640" height="480"></canvas>
-		</div>
-		<div>
-			<span>Animation time:</span><input type="text" id="time" value="5000"/>
-			<button id="export">Export</button>
-			<textarea name="" id="result" cols="30" rows="10"></textarea>
-			<button id="execute">Execute</button>
-		</div>
+	<h1>Draw the bezier curve below like in Photoshop</h1>
+	<div>
+		<div id="test"></div>
+		<canvas id="bezier-canvas" width="640" height="480"></canvas>
 	</div>
-	<div id="right">
-		<div id="container">
-		</div>
+	<div>
+		<span>Animation time:</span><input type="text" id="time" value="5000"/>
+		<button id="export">Export</button>
+		<textarea name="" id="result" cols="30" rows="10"></textarea>
+		<button id="execute">Execute</button>
 	</div>
+	<!--Local file system access. REFERENCE:http://www.html5rocks.com/en/tutorials/file/dndfiles/-->
+	<input type="file" id="files" name="files[]" multiple />
+	<output id="list"></output>
+
 	<script type="text/javascript">
 		var editor = new bezierEditor("bezier-canvas");
 		editor.draw();
@@ -70,5 +68,19 @@
 		
 		});
 	</script>
+<script type="text/javascript">
+	function handleFileSelect(evt) {
+		var files = evt.target.files;
+		var f = files[0];
+		var reader = new FileReader();
+		reader.onload = (function(theFile) {
+			return function(e) {
+				editor.loadImage(e.target.result);
+			};
+		})(f);
+		reader.readAsDataURL(f);
+	}
+	document.getElementById('files').addEventListener('change', handleFileSelect, false);
+</script>
 </body>
 </html>
