@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset='utf-8' />
+    <meta http-equiv="X-UA-Compatible" content="chrome=1" />
+    <meta name="description" content="Bezier-editor : A tool base on HTML5 canvas to create bezier curve like photoshop and then it can be exported as JavaScript code to create an animation path for an HTML element." />
+
+    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
+
+    <title>Bezier-editor</title>
+  </head>
+
+  <body>
+
+    <!-- HEADER -->
+    <div id="header_wrap" class="outer">
+        <header class="inner">
+          <a id="forkme_banner" href="https://github.com/123hurray/bezier-editor">View on GitHub</a>
+
+          <h1 id="project_title">Bezier-editor</h1>
+          <h2 id="project_tagline">A tool base on HTML5 canvas to create bezier curve like photoshop and then it can be exported as JavaScript code to create an animation path for an HTML element.</h2>
+
+            <section id="downloads">
+              <a class="zip_download_link" href="https://github.com/123hurray/bezier-editor/zipball/master">Download this project as a .zip file</a>
+              <a class="tar_download_link" href="https://github.com/123hurray/bezier-editor/tarball/master">Download this project as a tar.gz file</a>
+            </section>
+        </header>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div id="main_content_wrap" class="outer">
+      <section id="main_content" class="inner">
+        <h1>bezier-editor</h1>
+
+<h2>Introduction</h2>
+
+<p>It's a tool base on HTML5 canvas that allows you to create bezier curve like photoshop
+and then it can be export as JavaScript code to create an animation path for an HTML element.</p>
+
+<h2>How To</h2>
+
+<ol>
+<li><p>Open index.html and draw bezier curve in canvas like using Photoshop.</p></li>
+<li><p>Click "Export" to get the JavaScript code.</p></li>
+<li>
+<p>Create your own HTML file and include jQuery Library :</p>
+
+<div class="highlight"><pre><span class="nt">&lt;script </span><span class="na">type=</span><span class="s">"text/javascript"</span> <span class="na">src=</span><span class="s">"jquery.js"</span><span class="nt">&gt;&lt;/script&gt;</span>
+</pre></div>
+</li>
+<li>
+<p>And include bezier-animation.js :</p>
+
+<div class="highlight"><pre><span class="nt">&lt;script </span><span class="na">type=</span><span class="s">"text/javascript"</span> <span class="na">src=</span><span class="s">"bezier-animation.js"</span><span class="nt">&gt;&lt;/script&gt;</span>
+</pre></div>
+</li>
+<li>
+<p>Paste the code you just got in another script tag. Don't forget to add the element selector. Here is an example :</p>
+
+<div class="highlight"><pre><span class="o">&lt;</span><span class="nx">script</span> <span class="nx">type</span><span class="o">=</span><span class="s2">"text/javascript"</span><span class="o">&gt;</span>
+ <span class="nx">$</span><span class="p">(</span><span class="s1">'#test'</span><span class="p">).</span><span class="nx">stop</span><span class="p">()</span>
+ <span class="p">.</span><span class="nx">animate</span><span class="p">({</span><span class="nx">path</span><span class="o">:</span><span class="k">new</span> <span class="nx">bezier</span><span class="p">({</span><span class="nx">start</span><span class="o">:</span> <span class="p">[</span><span class="mi">78</span><span class="p">,</span> <span class="mi">196</span><span class="p">],</span><span class="nx">c1</span><span class="o">:</span><span class="p">[</span><span class="mi">237</span><span class="p">,</span> <span class="mi">133</span><span class="p">],</span><span class="nx">end</span><span class="o">:</span> <span class="p">[</span><span class="mi">306</span><span class="p">,</span><span class="mi">252</span><span class="p">],</span><span class="nx">c2</span><span class="o">:</span><span class="p">[</span><span class="mi">161</span><span class="p">,</span> <span class="mi">228</span><span class="p">],})},</span> <span class="mf">2716.5969158005164</span> <span class="p">,</span><span class="s2">"linear"</span><span class="p">)</span>  
+ <span class="p">.</span><span class="nx">animate</span><span class="p">({</span><span class="nx">path</span><span class="o">:</span><span class="k">new</span> <span class="nx">bezier</span><span class="p">({</span><span class="nx">start</span><span class="o">:</span> <span class="p">[</span><span class="mi">306</span><span class="p">,</span> <span class="mi">252</span><span class="p">],</span><span class="nx">c1</span><span class="o">:</span><span class="p">[</span><span class="mi">451</span><span class="p">,</span> <span class="mi">276</span><span class="p">],</span><span class="nx">end</span><span class="o">:</span> <span class="p">[</span><span class="mi">402</span><span class="p">,</span><span class="mi">393</span><span class="p">],</span><span class="nx">c2</span><span class="o">:</span><span class="p">[</span><span class="mi">234</span><span class="p">,</span> <span class="mi">425</span><span class="p">],})},</span> <span class="mf">2283.4030841994836</span> <span class="p">,</span><span class="s2">"linear"</span><span class="p">);</span>  
+<span class="o">&lt;</span><span class="err">/script&gt;</span>
+</pre></div>
+</li>
+<li><p>Enjoy your coding!</p></li>
+</ol><h2>To Do</h2>
+
+<ul>
+<li>Some advanced operation mode in photoshop.</li>
+<li>Native JavaScript animation support</li>
+</ul><h2>Questions?</h2>
+
+<p>If you have any questions or bugs to report, please send E-mail to <a href="mailto:admin@123hurray.tk">admin@123hurray.tk</a>, thx~</p>
+      </section>
+    </div>
+
+    <!-- FOOTER  -->
+    <div id="footer_wrap" class="outer">
+      <footer class="inner">
+        <p class="copyright">Bezier-editor maintained by <a href="https://github.com/123hurray">123hurray</a></p>
+        <p>Published with <a href="http://pages.github.com">GitHub Pages</a></p>
+      </footer>
+    </div>
+
+    
+
+  </body>
+</html>
