@@ -39,3 +39,7 @@ and then it can be export as JavaScript code to create an animation path for an 
 
 + Some advanced operation mode in photoshop.
 + Native JavaScript animation support
+
+## Questions?
+
+If you have any questions or bugs to report, please send E-mail to admin@123hurray.tk, thx~
