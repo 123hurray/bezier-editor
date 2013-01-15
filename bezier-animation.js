@@ -1,6 +1,3 @@
-/**
- * @Author Ray Zhang 
- */
 (function($){
   $.fx.step.path = function(fx) {
     var css = fx.end.css( 1 - fx.pos );
@@ -26,7 +23,7 @@
     }
   };
 var bezier = function( params) {
-  //params.start.length = 0.3333;
+	//params.start.length = 0.3333;
 	//params.end.length = 0.3333;
     this.start = params.start;
     this.end = params.end;

@@ -35,6 +35,14 @@ and then it can be export as JavaScript code to create an animation path for an 
 
 6. Enjoy your coding!
 
+## Change Log
+
+Add history support
+
+Add node deletion support
+
+can load an local image file as background
+
 ## To Do
 
 + Some advanced operation mode in photoshop.
