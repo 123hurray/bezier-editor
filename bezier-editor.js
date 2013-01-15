@@ -38,33 +38,9 @@ var bezierEditor = function(id) {
 		canvas: null,
 		pointSize: 8,
 		halfPointSize : 0,
-		backgroudImage: null,
 		ctx : null,
 		init : function(id) {
-			//history
-			window.onpopstate = function(e) {
-				if(e.state) {
-					editor.nodes = e.state.nodes;
-					editor.state = e.state.state;
-					editor.draw();
-				}
-			}
 			this.canvas = document.getElementById(id);
-			//hook Ctrl+Z and Ctrl+Y of the canvas
-			window.onkeypress = function(e) {
-				if(e.ctrlKey == true) {
-					switch(e.keyCode) {
-					case 26:	// Ctrl+Z	Undo
-						editor.undo();
-						break;
-					case 25:	// Ctrl+Y	Redo
-						editor.redo();
-						break;
-					}
-				}
-			}
-			/* Fix the drag cursor bug. When selection start, cursor will be set to "text"*/
-			this.canvas.onselectstart = function () { return false; }
 			this.ctx = this.canvas.getContext("2d");
 			this.halfPointSize = this.pointSize / 2;
 			this.canvas.onmousedown = function(e) {
@@ -73,26 +49,13 @@ var bezierEditor = function(id) {
 					editor.state.dragMode = e.ctrlKey * 2 + e.altKey;
 					editor.select(e);
 				}
-				else {
-					var _nodes = editor.nodes;
-					for(var i = 0; i < _nodes.length; ++i) {
-						var x = e.offsetX;
-						var y = e.offsetY;
-						if(x > _nodes[i].x - editor.halfPointSize && x < _nodes[i].x + editor.halfPointSize && y > _nodes[i].y - editor.halfPointSize && y < _nodes[i].y + editor.halfPointSize) {
-							editor.deleteNode(_nodes[i]);
-							editor.draw();
-							return;
-						}
-					}
-					editor.addNode(e);	
-				}
+				else
+					editor.addNode(e);
 			};
 			this.canvas.onmousemove = function(e) {
 				var x = e.offsetX;
 				var y = e.offsetY;
 				if(editor.state.down == true) {
-					if(editor.selectedNode)
-						editor.cursor("all-scroll");
 					switch(editor.state.selectType) {
 						case 'node': 
 							editor.dragNode(x, y);
@@ -107,73 +70,19 @@ var bezierEditor = function(id) {
 							editor.createControlPoint(x, y);
 					}
 				}
-				else {
-					var _nodes = editor.nodes;
-					for(var i = 0; i < _nodes.length; ++i) {
-						var x = e.offsetX;
-						var y = e.offsetY;
-						if(x > _nodes[i].x - editor.halfPointSize && x < _nodes[i].x + editor.halfPointSize && y > _nodes[i].y - editor.halfPointSize && y < _nodes[i].y + editor.halfPointSize) {
-							if(!e.ctrlKey)
-								editor.cursor("alias");
-							else
-								editor.cursor("all-scroll");
-								
-							return;
-						}
-					}
-					editor.cursor("default");
-				}
 			};
 			this.canvas.onmouseup = function(e) {
 				editor.mouseup(e);
 			};
 		},
-		
-		cursor: function(type) {
-			this.canvas.style.cursor = type;
-		},
-		
-		loadImage: function(imageURL) {
-			this.backgroundImage = new Image();
-			this.backgroundImage.src = imageURL;
-			this.draw();
-		},
-		
-		save: function() {
-			history.pushState({nodes:this.nodes,state:this.state}, location.href);
-		},
-		
-		undo: function() {
-			history.back();
-		},
-		
-		redo: function() {
-			history.forward();
-		},
-		
 		addNode :function(e) {
 			var x = e.offsetX;
 			var y = e.offsetY;
 			var _node = createNode(x, y, {x:x, y:y}, {x:x, y:y});
 			this.nodes.push(_node);
 			this.state.current = _node;
-			this.save();
 			this.draw();
 		},
-		
-		deleteNode: function(node) {
-			var _nodes = this.nodes;
-			for(var i = 0; i < _nodes.length; ++i) {
-				if(_nodes[i] === node) {
-					if(node === this.state.current)
-						this.state.current = null;
-					_nodes.splice(i, 1);
-					this.draw();
-					return;
-				}
-			}
-		},
-		
 		dragNode: function(x, y) {
 			var _node = this.state.selectedNode;
 			if(!_node)
@@ -225,7 +134,6 @@ var bezierEditor = function(id) {
 			this.state.dragMode = 0;
 			this.state.selectedNode = null;
 			this.state.selectType = null;
-			this.cursor("default");
 		},
 		select: function(e) {
 			var _nodes = this.nodes;
@@ -233,7 +141,6 @@ var bezierEditor = function(id) {
 				var x = e.offsetX;
 				var y = e.offsetY;
 				if(x > _nodes[i].x - this.halfPointSize && x < _nodes[i].x + this.halfPointSize && y > _nodes[i].y - this.halfPointSize && y < _nodes[i].y + this.halfPointSize) {
-					this.cursor("all-scroll");
 					this.state.selectedNode = _nodes[i];
 					this.state.selectType = 'node';
 					this.draw();
@@ -245,7 +152,6 @@ var bezierEditor = function(id) {
 				var y = e.offsetY;
 				if(x > _nodes[i].controls[0].x - this.halfPointSize && x < _nodes[i].controls[0].x + this.halfPointSize 
 				&& y > _nodes[i].controls[0].y - this.halfPointSize && y < _nodes[i].controls[0].y + this.halfPointSize) {
-					this.cursor("all-scroll");
 					this.state.selectedNode = _nodes[i];
 					this.state.selectType = 'control0';
 					this.draw();
@@ -253,7 +159,6 @@ var bezierEditor = function(id) {
 				}
 				if(x > _nodes[i].controls[1].x - this.halfPointSize && x < _nodes[i].controls[1].x + this.halfPointSize 
 				&& y > _nodes[i].controls[1].y - this.halfPointSize && y < _nodes[i].controls[1].y + this.halfPointSize) {
-					this.cursor("all-scroll");
 					this.state.selectedNode = _nodes[i];
 					this.state.selectType = 'control1';
 					this.draw();
@@ -267,8 +172,6 @@ var bezierEditor = function(id) {
 		draw : function() {
 			var _ctx = this.ctx;
 			_ctx.clearRect(0,0, this.canvas.width, this.canvas.height);
-			if(this.backgroundImage)
-				_ctx.drawImage(this.backgroundImage, 0, 0);
 			_ctx.strokeStyle="#000000";
 			_ctx.beginPath();
 			_ctx.moveTo(0,0);
@@ -279,31 +182,19 @@ var bezierEditor = function(id) {
 			_ctx.stroke();
 			_ctx.strokeStyle="#00FF00";
 			var nodes = this.nodes;
-			if(this.state.current) {
+			for(var i = 0; i < nodes.length; ++i) {
 				_ctx.beginPath();
-				_ctx.moveTo(this.state.current.x, this.state.current.y);
-				_ctx.lineTo(this.state.current.controls[0].x, this.state.current.controls[0].y);
-				_ctx.moveTo(this.state.current.x, this.state.current.y);
-				_ctx.lineTo(this.state.current.controls[1].x, this.state.current.controls[1].y);
+				_ctx.moveTo(nodes[i].x, nodes[i].y);
+				_ctx.lineTo(nodes[i].controls[0].x, nodes[i].controls[0].y);
+				_ctx.moveTo(nodes[i].x, nodes[i].y);
+				_ctx.lineTo(nodes[i].controls[1].x, nodes[i].controls[1].y);
 				_ctx.stroke();
-				_ctx.fillStyle="#FFFF00";
-				_ctx.fillRect(this.state.current.controls[0].x-this.halfPointSize, this.state.current.controls[0].y-this.halfPointSize, this.pointSize, this.pointSize);
-				_ctx.fillRect(this.state.current.controls[1].x-this.halfPointSize, this.state.current.controls[1].y-this.halfPointSize, this.pointSize, this.pointSize);
 			}
-			
-			// for(var i = 0; i < nodes.length; ++i) {
-				// _ctx.beginPath();
-				// _ctx.moveTo(nodes[i].x, nodes[i].y);
-				// _ctx.lineTo(nodes[i].controls[0].x, nodes[i].controls[0].y);
-				// _ctx.moveTo(nodes[i].x, nodes[i].y);
-				// _ctx.lineTo(nodes[i].controls[1].x, nodes[i].controls[1].y);
-				// _ctx.stroke();
-			// }
 			_ctx.fillStyle="#FFFF00";
 			for(var i = 0; i < nodes.length; ++i) {
 				_ctx.fillRect(nodes[i].x-this.halfPointSize, nodes[i].y-this.halfPointSize, this.pointSize, this.pointSize);
-				//_ctx.fillRect(nodes[i].controls[0].x-this.halfPointSize, nodes[i].controls[0].y-this.halfPointSize, this.pointSize, this.pointSize);
-				//_ctx.fillRect(nodes[i].controls[1].x-this.halfPointSize, nodes[i].controls[1].y-this.halfPointSize, this.pointSize, this.pointSize);
+				_ctx.fillRect(nodes[i].controls[0].x-this.halfPointSize, nodes[i].controls[0].y-this.halfPointSize, this.pointSize, this.pointSize);
+				_ctx.fillRect(nodes[i].controls[1].x-this.halfPointSize, nodes[i].controls[1].y-this.halfPointSize, this.pointSize, this.pointSize);
 			}
 			if(this.state.selectedNode != null) {
 				_ctx.fillStyle="#000";
@@ -315,13 +206,8 @@ var bezierEditor = function(id) {
 				_ctx.arc(this.state.selectedNode.controls[1].x, this.state.selectedNode.controls[1].y, this.halfPointSize, 0, 2 * Math.PI, true);
 				_ctx.closePath();
 				_ctx.fill();
-				_ctx.beginPath();
 				_ctx.fillRect(this.state.selectedNode.x-this.halfPointSize, this.state.selectedNode.y-this.halfPointSize, this.pointSize, this.pointSize);
-				_ctx.moveTo(this.state.selectedNode.x, this.state.selectedNode.y);
-				_ctx.lineTo(this.state.selectedNode.controls[0].x, this.state.selectedNode.controls[0].y);
-				_ctx.moveTo(this.state.selectedNode.x, this.state.selectedNode.y);
-				_ctx.lineTo(this.state.selectedNode.controls[1].x, this.state.selectedNode.controls[1].y);
-				_ctx.stroke();
+
 			}
 			_ctx.strokeStyle="#FF0000";
 			if(nodes.length > 1)
